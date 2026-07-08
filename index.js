@@ -8,6 +8,7 @@ app.use(express.json());
 app.use(logger(`dev`));
 
 app.use("/api/customers", require("./routes/customersRouter"));
+app.use("/api/products", require("./routes/productsRouter"));
 
 const PORT = 3000;
 
