@@ -34,8 +34,27 @@ const getCustomerById = async (req, res) => {
     }
 };
 
+const updateCustomer = async (req, res) => {
+    try {
+        const customerId = req.params.id;   
+        const { name, email, address, phone } = req.body;
+        const updatedCustomer = await Customer.findByIdAndUpdate(
+            customerId,
+            { name, email, address, phone },
+            { new: true }
+        );
+        if (!updatedCustomer) {
+            return res.status(404).json({ message: "Customer not found" });
+        }
+        res.status(200).json({ message: "Customer updated successfully", customer: updatedCustomer });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating customer", error });
+    }
+};
+
 module.exports = {
     createCustomer,
     getAllCustomers,
     getCustomerById,
+    updateCustomer,
 };
