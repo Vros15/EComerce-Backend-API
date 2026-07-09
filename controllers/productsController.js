@@ -39,8 +39,31 @@ const getProductById = async (req, res) => {
     }
 }
 
+//PUT update a product by ID
+const updateProductById = async (req, res) => { 
+    try {
+        //destructuring the product id
+        const { id } = req.params;
+        //destructuring the updated product details from the request body
+        const { name, description, price, category, stock, image } = req.body;
+        //finding the product by its id and updating it with the new details
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            { name, description, price, category, stock, image },
+            { new: true }
+        );
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating product", error });
+    }
+}
+
 module.exports = {
     createProduct,
     getAllProducts,
     getProductById,
+    updateProductById
 };
