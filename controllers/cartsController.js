@@ -32,6 +32,33 @@ const createOneCart = async (req, res) => {
     }
 };
 
+const getCart = async (req, res) => { 
+    try {
+        //deconstruct the customer parameter from the request URL
+        const { customer } = req.params;
+
+        const cart = await Cart.findOne({ customer });
+
+        // If no cart is found for the given customer, return a 404 error.
+        if (!cart) {
+            return res.status(404).json({
+                message: "Cart not found for this customer."
+            });
+        }
+        // Return the cart details if found
+        res.status(200).json({
+            message: "Cart retrieved successfully.",
+            cart
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error retrieving cart.",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
-    createOneCart
+    createOneCart,
+    getCart
 };
