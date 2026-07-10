@@ -1,4 +1,5 @@
 const Cart = require("../models/Cart");
+const Product = require("../models/Product");
 
 const createOneCart = async (req, res) => {
     try {
@@ -64,9 +65,17 @@ const addProductToCart = async (req, res) => {
         const { productId, quantity } = req.body;
 
         // Validate request body
-        if (!productId || quantity == null) {
+        if (!productId || !Number.isInteger(quantity) || quantity <= 0) {
             return res.status(400).json({
-                message: "Both productId and quantity are required."
+                message: "Both productId and a valid quantity are required."
+            });
+        }
+
+        // Check if the product exists
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({
+                message: "Product not found."
             });
         }
 
