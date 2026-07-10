@@ -115,8 +115,57 @@ const addProductToCart = async (req, res) => {
     }
 };
 
+//Remove product from cart
+const removeProductFromCart = async (req, res) => {
+    try {
+        const { customer } = req.params;
+        const { productId } = req.body;
+
+        if (!productId) {
+            return res.status(400).json({
+                message: "productId is required."
+            });
+        }
+
+        const updatedCart = await Cart.findOneAndUpdate(
+            {
+                customer,
+                "products.productId": productId
+            },
+            {
+                $pull: {
+                    products: { productId }
+                }
+            },
+            {
+                new: true
+            }
+        );
+
+        if (!updatedCart) {
+            return res.status(404).json({
+                message: "Cart not found or product not in cart."
+            });
+        }
+
+        res.status(200).json({
+            message: "Product removed from cart successfully.",
+            cart: updatedCart
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Error removing product from cart.",
+            error: error.message
+        });
+    }
+};
+
+
+
 module.exports = {
     createOneCart,
     getCart,
-    addProductToCart
+    addProductToCart,
+    removeProductFromCart
 };

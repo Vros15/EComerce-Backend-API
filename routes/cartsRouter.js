@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {createOneCart, getCart,addProductToCart} = require("../controllers/cartsController");
+const {createOneCart, getCart,addProductToCart,removeProductFromCart} = require("../controllers/cartsController");
 
 // Route to create a new cart
 //endpoint: POST /api/carts
@@ -14,4 +14,7 @@ router.get("/:customer", getCart);
 //endpoint: POST /api/carts/:customer/products
 router.post("/:customer/products", addProductToCart);
 
+// Route to remove a product from a cart by customer
+//endpoint: DELETE /api/carts/:customer/products
+router.delete("/:customer/products", removeProductFromCart);
 module.exports = router;
