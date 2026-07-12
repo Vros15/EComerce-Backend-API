@@ -3,16 +3,20 @@
 // Import the Express router and the orders controller
 const express = require("express");
 const router = express.Router();
-const {} = require("../controllers/ordersController");
+const {createOrderFromCart} = require("../controllers/ordersController");
 
-// Define the routes for handling order-related API endpoints
+//POST create a new order
+//endpoint: POST /order/:customer
+router.post("/:customer", createOrderFromCart);
 
 //GET all orders & Filter by status
 
 //GET a single order by ID
 
-//POST create a new order
 
 //PUT update status of an order by ID
 
 //DELETE delete an order by ID
+
+//Export the router for use in the main application
+module.exports = router;
