@@ -19,6 +19,7 @@ const orderSchema = new mongoose.Schema({
             quantity: {
                 type: Number,
                 required: true,
+                min: 1,
             },
         },
     ],
@@ -26,6 +27,7 @@ const orderSchema = new mongoose.Schema({
     totalPrice: {
         type: Number,
         required: true,
+        min: 0,
     },
     //status of the order (pending, shipped, delivered, cancelled)
     status: {
