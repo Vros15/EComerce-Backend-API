@@ -2,8 +2,6 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const dns = require("node:dns");
 
-// Force Node to use public DNS servers
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 // Models
 const Product = require("../models/Product");
