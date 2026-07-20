@@ -1,69 +1,47 @@
 // controllers/customerController.js
 const Customer = require("../models/Customer");
+const AppError = require("../utils/AppError");
+const asyncHandler = require("../utils/asyncHandler");
 
-const createCustomer = async (req, res) => {
-    try {
-        const { name, email, address, phone } = req.body;
-        const newCustomer = await Customer.create({ name, email, address, phone });
-        res.status(201).json({ message: "Customer created successfully", customer: newCustomer });
-    } catch (error) {
-        res.status(500).json({ message: "Error creating customer", error });
-    }
-};
+const createCustomer = asyncHandler(async (req, res) => {
+    const { name, email, address, phone } = req.body;
+    const newCustomer = await Customer.create({ name, email, address, phone });
+    res.status(201).json({ message: "Customer created successfully", customer: newCustomer });
+});
 
-const getAllCustomers = async (req, res) => {
-    try {
-        
-        const customers = await Customer.find();
-        res.status(200).json({ customers });
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching customers", error });
-    }
-};
+const getAllCustomers = asyncHandler(async (req, res) => {
+    const customers = await Customer.find();
+    res.status(200).json({ customers });
+});
 
-const getCustomerById = async (req, res) => {
-    try {
-        const customerId = req.params.id;
-        const customer = await Customer.findById(customerId);
-        if (!customer) {
-            return res.status(404).json({ message: "Customer not found" });
-        }
-        res.status(200).json({ message: "Customer by ID fetched successfully", customer });
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching customer", error });
+const getCustomerById = asyncHandler(async (req, res) => {
+    const customer = await Customer.findById(req.params.id);
+    if (!customer) {
+        throw new AppError("Customer not found.", 404, "CUSTOMER_NOT_FOUND");
     }
-};
+    res.status(200).json({ message: "Customer retrieved successfully.", customer });
+});
 
-const updateCustomer = async (req, res) => {
-    try {
-        const customerId = req.params.id;   
-        const { name, email, address, phone } = req.body;
-        const updatedCustomer = await Customer.findByIdAndUpdate(
-            customerId,
-            { name, email, address, phone },
-            { new: true }
-        );
-        if (!updatedCustomer) {
-            return res.status(404).json({ message: "Customer not found" });
-        }
-        res.status(200).json({ message: "Customer updated successfully", customer: updatedCustomer });
-    } catch (error) {
-        res.status(500).json({ message: "Error updating customer", error });
+const updateCustomer = asyncHandler(async (req, res) => {
+    const { name, email, address, phone } = req.body;
+    const updatedCustomer = await Customer.findByIdAndUpdate(
+        req.params.id,
+        { name, email, address, phone },
+        { new: true }
+    );
+    if (!updatedCustomer) {
+        throw new AppError("Customer not found.", 404, "CUSTOMER_NOT_FOUND");
     }
-};
+    res.status(200).json({ message: "Customer updated successfully.", customer: updatedCustomer });
+});
 
-const deleteCustomer = async (req, res) => {
-    try {
-        const customerId = req.params.id;
-        const deletedCustomer = await Customer.findByIdAndDelete(customerId);
-        if (!deletedCustomer) {
-            return res.status(404).json({ message: "Customer not found" });
-        }
-        res.status(200).json({ message: "Customer deleted successfully", customer: deletedCustomer });
-    } catch (error) {
-        res.status(500).json({ message: "Error deleting customer", error });
+const deleteCustomer = asyncHandler(async (req, res) => {
+    const deletedCustomer = await Customer.findByIdAndDelete(req.params.id);
+    if (!deletedCustomer) {
+        throw new AppError("Customer not found.", 404, "CUSTOMER_NOT_FOUND");
     }
-};
+    res.status(200).json({ message: "Customer deleted successfully.", customer: deletedCustomer });
+});
 
 module.exports = {
     createCustomer,
