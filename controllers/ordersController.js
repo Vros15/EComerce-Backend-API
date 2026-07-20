@@ -134,6 +134,26 @@ const updateOrderById = async (req, res) => {
 };
 
 // Function to delete an order by ID
+const deleteOrderById = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const deletedOrder = await Order.findByIdAndDelete(orderId);
+        if (!deletedOrder) {
+            return res.status(404).json({
+                message: "Order not found."
+            });
+        }
+        res.status(200).json({
+            message: "Order deleted successfully.",
+            order: deletedOrder
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error deleting order.",
+            error: error.message
+        });
+    }
+};
 
 // Export the controller functions for use in the routes
-module.exports = { createOrderFromCart,getAllOrders,getOrderById, updateOrderById };
+module.exports = { createOrderFromCart,getAllOrders,getOrderById, updateOrderById, deleteOrderById };
